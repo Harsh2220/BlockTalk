@@ -5,6 +5,15 @@
       "bundler": "metro"
     },
     "name": "sample",
-    "slug": "sample"
+    "slug": "xmtp",
+    "extra": {
+      "eas": {
+        "projectId": "9498969a-245c-45c2-aa59-90c8de4bff75"
+      }
+    },
+    "owner": "iamskia",
+    "android": {
+      "package": "com.vivek.xmtp"
+    }
   }
 }
