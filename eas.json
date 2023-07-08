@@ -15,7 +15,8 @@
     },
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "node": "v18.16.1"
     },
     "development-simulator": {
       "developmentClient": true,
