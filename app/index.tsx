@@ -3,16 +3,20 @@ import { useWeb3Modal } from "@web3modal/react-native";
 import React, { useCallback } from "react";
 import { Button, View } from "react-native";
 
+interface Signer {
+  getAddress(): Promise<string>;
+  signMessage(message: ArrayLike<number> | string): Promise<string>;
+}
+
 export default function index() {
   const { open, isConnected, address, provider } = useWeb3Modal();
 
-  //Signer Interface
-  const signer = {
+  const signer: Signer = {
     getAddress: function (): Promise<string> {
       return address;
     },
     signMessage: function (
-      message: string | ArrayLike<number>
+      message: ArrayLike<number> | string
     ): Promise<string> {
       return provider?.request({
         method: "personal_sign",
@@ -25,9 +29,10 @@ export default function index() {
     try {
       console.log("Connecting to XMTP....");
 
-      const client = await XMTP.Client.create(signer, "dev");
-
-      console.log("Clinet", client);
+      if (signer) {
+        const client = await XMTP.Client.create(signer, "dev");
+        console.log("Clinet", client);
+      }
     } catch (error) {
       console.log("Error in connecting To XMTP", error);
     }
