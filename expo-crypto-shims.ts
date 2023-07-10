@@ -2,7 +2,6 @@
 // Apply only with Expo SDK >= 48
 
 import { getRandomValues as expoCryptoGetRandomValues } from "expo-crypto";
-
 class Crypto {
   getRandomValues = expoCryptoGetRandomValues;
 }

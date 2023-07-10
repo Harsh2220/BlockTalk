@@ -7,22 +7,33 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Send from "../../assets/icons/Send";
 import ChatMessage from "../../components/Chats/ChatMessage";
-
-
+import useClientStore from "../../store/clientStore";
 
 const SingleChat = ({}) => {
   const params = useLocalSearchParams();
   const navigation = useNavigation();
+  const { client } = useClientStore();
+
+  const address = params.address;
+
+  async function getMessages() {
+    for (const conversation of await client.conversations.list()) {
+      const messagesInConversation = await conversation.messages();
+      console.log(messagesInConversation);
+    }
+  }
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: params.chatName,
     });
+    getMessages();
   }, []);
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView
@@ -74,11 +85,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   footer: {
-    bottom: 0,
+    bottom: 16,
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    padding: 5,
+    padding: 16,
   },
   textinput: {
     flex: 1,

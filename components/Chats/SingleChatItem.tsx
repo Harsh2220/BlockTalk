@@ -7,9 +7,15 @@ type ChatCardProps = {
   src: string;
   chatName: string;
   lastMessage: string;
+  address: string;
 };
 
-const ChatCard: React.FC<ChatCardProps> = ({ src, chatName, lastMessage }) => {
+const ChatCard: React.FC<ChatCardProps> = ({
+  src,
+  chatName,
+  lastMessage,
+  address,
+}) => {
   const router = useRouter();
 
   const openFullImage = () => {
@@ -24,12 +30,13 @@ const ChatCard: React.FC<ChatCardProps> = ({ src, chatName, lastMessage }) => {
     router.push("/singlechat");
     router.setParams({
       chatName: chatName,
+      address: address,
     });
   };
 
   return (
     <TouchableOpacity style={styles.chatCardContainer} onPress={goToSingleChat}>
-      <TouchableOpacity style={styles.avatarContainer} onPress={openFullImage}>
+      <TouchableOpacity onPress={openFullImage}>
         <Avatar src={src ? src : ""} height={52} width={52} />
       </TouchableOpacity>
       <View style={styles.chatDetailsContainer}>
@@ -50,12 +57,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginVertical: 8,
   },
-  avatarContainer: {
-    flex: 0.25,
-  },
   chatDetailsContainer: {
     flex: 1,
-    justifyContent: "flex-start",
+    justifyContent: "center",
+    marginLeft: 16,
   },
   chatHeading: {
     color: "black",

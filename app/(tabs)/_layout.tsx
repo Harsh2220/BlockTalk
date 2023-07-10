@@ -7,11 +7,11 @@ export default function () {
   return (
     <Tabs>
       <Tabs.Screen
-        name="Chats"
+        name="Calls"
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <Chats
+              <Calls
                 height={25}
                 width={25}
                 color={focused ? "black" : "gray"}
@@ -21,11 +21,11 @@ export default function () {
         }}
       />
       <Tabs.Screen
-        name="Calls"
+        name="Chats"
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <Calls
+              <Chats
                 height={25}
                 width={25}
                 color={focused ? "black" : "gray"}

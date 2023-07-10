@@ -1,26 +1,40 @@
-import { View, Text } from "react-native";
 import React from "react";
-import { Link } from "expo-router";
+import { FlatList, ScrollView, View } from "react-native";
 import ChatCard from "../../components/Chats/SingleChatItem";
+import useClientStore from "../../store/clientStore";
+import useConversationStore from "../../store/conversationStore";
+import { Conversation } from "@xmtp/react-native-sdk";
+import formatAddress from "../../utils/formatAddress";
 
 const Home = () => {
+  const { client } = useClientStore();
+  const { conversations, setConversations } = useConversationStore();
+
+  async function getConversations() {
+    const conversations = await client?.conversations.list();
+    setConversations(conversations);
+  }
+
+  React.useEffect(() => {
+    getConversations();
+  }, []);
+
+  const renderItem = ({ item }: { item: Conversation }) => {
+    return (
+      <ChatCard
+        src={""}
+        chatName={formatAddress(item?.peerAddress)}
+        lastMessage={"bhai ye 2M le ja na pls "}
+        address={item?.peerAddress}
+      />
+    );
+  };
+
   return (
     <View>
-      <ChatCard
-        src={""}
-        chatName={"Stani.lens"}
-        lastMessage={"bhai ye 2M le ja na pls "}
-      />
-      <ChatCard
-        src={""}
-        chatName={"iamvivek.lens"}
-        lastMessage={"ye dekho :)"}
-      />
-      <ChatCard
-        src={""}
-        chatName={"vitalik.eth"}
-        lastMessage={"Brooo,sent 1eth, check "}
-      />
+      {conversations && (
+        <FlatList data={conversations} renderItem={renderItem} />
+      )}
     </View>
   );
 };
