@@ -1,5 +1,6 @@
-import * as XMTP from "@xmtp/react-native-sdk";
 import { useWeb3Modal } from "@web3modal/react-native";
+import * as XMTP from "@xmtp/react-native-sdk";
+import { Link } from "expo-router";
 import React, { useCallback } from "react";
 import { Button, View } from "react-native";
 
@@ -30,7 +31,7 @@ export default function index() {
       console.log("Connecting to XMTP....");
 
       if (signer) {
-        const client = await XMTP.Client.create(signer, "dev");
+        const client = await XMTP.Client.create(signer as any, "dev");
         console.log("Clinet", client);
       }
     } catch (error) {
@@ -39,13 +40,25 @@ export default function index() {
   }, []);
 
   return (
-    <View>
-      <View style={{ width: "80%", alignSelf: "center" }}>
-        <Button
-          onPress={open}
-          title={isConnected ? "Connected" : "Connect Wallet"}
-        />
-        {isConnected && <Button title="Enable Chat" onPress={handleConnect} />}
+    <View
+      style={{
+        flex: 1,
+        width: "80%",
+        alignSelf: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Button
+        onPress={open}
+        title={isConnected ? "Connected" : "Connect Wallet"}
+      />
+      {isConnected && <Button title="Enable Chat" onPress={handleConnect} />}
+      <View
+        style={{
+          marginVertical: 16,
+        }}
+      >
+        <Link href={"/Chats"}>Go To Chats</Link>
       </View>
     </View>
   );
