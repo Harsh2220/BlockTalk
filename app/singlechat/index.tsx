@@ -23,7 +23,7 @@ const SingleChat = ({}) => {
   async function getMessages() {
     for (const conversation of await client.conversations.list()) {
       const messagesInConversation = await conversation.messages();
-      console.log(messagesInConversation);
+      // console.log(messagesInConversation);
     }
   }
 

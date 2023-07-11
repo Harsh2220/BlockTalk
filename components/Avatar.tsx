@@ -23,4 +23,4 @@ const Avatar: React.FC<AvatarProps> = ({ src, height, width }) => {
     />
   );
 };
-export default Avatar;
+export default  React.memo(Avatar);

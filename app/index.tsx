@@ -1,12 +1,10 @@
-import { useWeb3Modal } from "@web3modal/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import * as XMTP from "@xmtp/react-native-sdk";
+import { Link, useRouter } from "expo-router";
 import React, { useCallback } from "react";
 import { Button, View } from "react-native";
 import useClientStore from "../store/clientStore";
-import { Link, useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import parseCircularJSON from "../utils/parseCircularJson";
-import { Client, useClient } from "@xmtp/react-sdk";
 
 interface Signer {
   getAddress(): Promise<string>;
@@ -14,7 +12,7 @@ interface Signer {
 }
 
 export default function index() {
-  const { open, isConnected, address, provider } = useWeb3Modal();
+  const { open, isConnected, address, provider } = useWalletConnectModal();
   const { setClient } = useClientStore();
   const router = useRouter();
 
@@ -38,6 +36,7 @@ export default function index() {
       const key = await client.exportKeyBundle();
       await AsyncStorage.setItem("@xmtp_client", JSON.stringify(key));
       setClient(client);
+      router.replace("/Chats")
     } catch (error) {
       console.log("Error in connecting To XMTP", error);
     }

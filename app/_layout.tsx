@@ -1,4 +1,5 @@
-import { Web3Modal } from "@web3modal/react-native";
+import { WalletConnectModal } from '@walletconnect/modal-react-native';
+
 import { Stack } from "expo-router";
 import React from "react";
 import { isAndroid } from "../constants/platform";
@@ -49,7 +50,7 @@ const StackLayout = () => {
           }}
         />
       </Stack>
-      <Web3Modal projectId={projectId} providerMetadata={providerMetadata} />
+      <WalletConnectModal projectId={projectId} providerMetadata={providerMetadata} />
     </>
   );
 };

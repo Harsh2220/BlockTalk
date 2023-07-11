@@ -1,6 +1,9 @@
-import { useNavigation, useRouter } from "expo-router";
-import React, { useLayoutEffect } from "react";
+import { Conversation } from "@xmtp/react-native-sdk";
+import { useRouter } from "expo-router";
+import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import useLensProfile from "../../hooks/useLensProfile";
+import formatAddress from "../../utils/formatAddress";
 import Avatar, { FALLBACK_IMAGE } from "../Avatar";
 
 type ChatCardProps = {
@@ -8,6 +11,7 @@ type ChatCardProps = {
   chatName: string;
   lastMessage: string;
   address: string;
+  item: Conversation;
 };
 
 const ChatCard: React.FC<ChatCardProps> = ({
@@ -15,32 +19,37 @@ const ChatCard: React.FC<ChatCardProps> = ({
   chatName,
   lastMessage,
   address,
+  item,
 }) => {
+  const { data } = useLensProfile(item?.peerAddress);
   const router = useRouter();
+
+  const PROFILE_PIC_URI = data?.avatar;
 
   const openFullImage = () => {
     router.push("/fullImage");
     router.setParams({
-      uri: src || FALLBACK_IMAGE,
-      title: chatName,
+      uri: PROFILE_PIC_URI || FALLBACK_IMAGE,
+      title: data?.handle || chatName,
     });
   };
 
   const goToSingleChat = () => {
     router.push("/singlechat");
     router.setParams({
-      chatName: chatName,
+      chatName: data?.handle || chatName,
       address: address,
     });
   };
-
   return (
     <TouchableOpacity style={styles.chatCardContainer} onPress={goToSingleChat}>
       <TouchableOpacity onPress={openFullImage}>
-        <Avatar src={src ? src : ""} height={52} width={52} />
+        <Avatar src={PROFILE_PIC_URI} height={52} width={52} />
       </TouchableOpacity>
       <View style={styles.chatDetailsContainer}>
-        <Text style={styles.chatHeading}>{chatName}</Text>
+        <Text style={styles.chatHeading}>
+          {data?.handle || data?.name || formatAddress(item?.peerAddress)}
+        </Text>
         <Text style={styles.lastMessage} numberOfLines={1}>
           {lastMessage}
         </Text>
@@ -49,7 +58,7 @@ const ChatCard: React.FC<ChatCardProps> = ({
   );
 };
 
-export default ChatCard;
+export default React.memo(ChatCard);
 
 const styles = StyleSheet.create({
   chatCardContainer: {

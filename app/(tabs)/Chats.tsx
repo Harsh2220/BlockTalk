@@ -26,6 +26,7 @@ const Home = () => {
         chatName={formatAddress(item?.peerAddress)}
         lastMessage={"bhai ye 2M le ja na pls "}
         address={item?.peerAddress}
+        item={item}
       />
     );
   };
