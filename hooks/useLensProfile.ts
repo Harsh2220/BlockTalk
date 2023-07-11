@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { LENS_API_URL } from "../constants";
+import { storage } from "../lib/storage";
 import getIPFSLink from "../utils/getIPFSLink";
 
 type ProfileData = {
@@ -9,7 +10,6 @@ type ProfileData = {
 };
 
 const useLensProfile = (ethAddress: string) => {
-
   const [data, setdata] = useState<ProfileData | null>(null);
 
   useEffect(() => {
@@ -17,6 +17,20 @@ const useLensProfile = (ethAddress: string) => {
   }, []);
 
   const getLensProfile = async () => {
+    if (ethAddress) {
+      const localData = storage.getString(ethAddress);
+      if (localData) {
+        console.log("MMKV CALL")
+        const jsonData = JSON.parse(localData);
+        setdata({
+          handle: jsonData?.handle,
+          name: jsonData?.name,
+          avatar: jsonData?.avatar,
+        });
+        return;
+      }
+    }
+    console.log("API CALL",ethAddress)
     try {
       let headersList = {
         "Content-Type": "application/json",
@@ -44,8 +58,16 @@ const useLensProfile = (ethAddress: string) => {
             json?.data?.defaultProfile?.picture?.original?.url
           ),
         });
+        const LocalJSONData = {
+          handle: json?.data?.defaultProfile?.handle,
+          name: json?.data?.defaultProfile?.name,
+          avatar: getIPFSLink(
+            json?.data?.defaultProfile?.picture?.original?.url
+          ),
+        };
+        storage.set(ethAddress, JSON.stringify(LocalJSONData));
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   return { data };
 };

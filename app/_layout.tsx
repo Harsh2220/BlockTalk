@@ -61,7 +61,7 @@ const StackLayout = () => {
             presentation: "transparentModal",
             headerShown: false,
             title: "Single Chat",
-            animation: "default",
+            animation: "slide_from_bottom",
           }}
         />
       </Stack>
