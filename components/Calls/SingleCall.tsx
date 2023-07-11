@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   chatHeading: {
-    color: "black",
+    color: "white",
     fontSize: 18,
     fontWeight: "500",
   },

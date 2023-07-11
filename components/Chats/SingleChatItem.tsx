@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   chatHeading: {
-    color: "black",
+    color: "white",
     fontSize: 18,
     fontWeight: "500",
   },

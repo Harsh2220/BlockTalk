@@ -9,7 +9,7 @@ const Chat = (props: SvgProps) => (
     {...props}
   >
     <G
-      stroke="#000"
+      stroke={props.color}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.5}

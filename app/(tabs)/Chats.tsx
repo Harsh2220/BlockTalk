@@ -1,10 +1,11 @@
 import React from "react";
-import { FlatList, ScrollView, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import ChatCard from "../../components/Chats/SingleChatItem";
 import useClientStore from "../../store/clientStore";
 import useConversationStore from "../../store/conversationStore";
 import { Conversation } from "@xmtp/react-native-sdk";
 import formatAddress from "../../utils/formatAddress";
+import { black } from "../../constants/Colors";
 
 const Home = () => {
   const { client } = useClientStore();
@@ -20,19 +21,22 @@ const Home = () => {
   }, []);
 
   const renderItem = ({ item }: { item: Conversation }) => {
-    return (
-      <ChatCard
-        src={""}
-        chatName={formatAddress(item?.peerAddress)}
-        lastMessage={"bhai ye 2M le ja na pls "}
-        address={item?.peerAddress}
-        item={item}
-      />
-    );
+    console.log(item?.conversationID);
+    if (item?.conversationID?.startsWith("lens.dev/dm")) {
+      return (
+        <ChatCard
+          src={""}
+          chatName={formatAddress(item?.peerAddress)}
+          lastMessage={"iska logic baki hai dostooo"}
+          address={item?.peerAddress}
+          item={item}
+        />
+      );
+    }
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       {conversations && (
         <FlatList data={conversations} renderItem={renderItem} />
       )}
@@ -41,3 +45,10 @@ const Home = () => {
 };
 
 export default Home;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: black[700],
+  },
+});

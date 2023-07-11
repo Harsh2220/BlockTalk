@@ -3,7 +3,8 @@ import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import * as XMTP from "@xmtp/react-native-sdk";
 import { Link, useRouter } from "expo-router";
 import React, { useCallback } from "react";
-import { Button, View } from "react-native";
+import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
+import { black, white } from "../constants/Colors";
 import useClientStore from "../store/clientStore";
 
 interface Signer {
@@ -18,7 +19,9 @@ export default function index() {
 
   const signer: Signer = {
     getAddress: function (): Promise<string> {
-      return address;
+      return new Promise((res, rej) => {
+        res(address);
+      });
     },
     signMessage: function (
       message: ArrayLike<number> | string
@@ -43,14 +46,20 @@ export default function index() {
   }, []);
 
   const handleLogin = async () => {
-    const key = await AsyncStorage.getItem("@xmtp_client");
-    const client = await XMTP.Client.createFromKeyBundle(
-      JSON.parse(key),
-      "production"
-    );
-    if (client) {
-      setClient(client);
-      router.replace("/Chats");
+    try {
+      const key = await AsyncStorage.getItem("@xmtp_client");
+      if (!key) router.replace("/login");
+      if (key) {
+        const client = await XMTP.Client.createFromKeyBundle(
+          JSON.parse(key),
+          "production"
+        );
+        // return
+        setClient(client);
+        router.replace("/Chats");
+      }
+    } catch (error) {
+      console.log("Error in handleLogin");
     }
   };
 
@@ -59,28 +68,16 @@ export default function index() {
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        width: "80%",
-        alignSelf: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Button
-        onPress={() => {
-          open();
-        }}
-        title={isConnected ? "Connected" : "Connect Wallet"}
-      />
-      {isConnected && <Button title="Enable Chat" onPress={handleConnect} />}
-      <View
-        style={{
-          marginVertical: 16,
-        }}
-      >
-        <Link href={"/Chats"}>Go To Chats</Link>
-      </View>
+    <View style={styles.container}>
+      <ActivityIndicator size={"small"} color={white[300]} />
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: black[700],
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
