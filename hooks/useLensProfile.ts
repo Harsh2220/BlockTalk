@@ -20,7 +20,6 @@ const useLensProfile = (ethAddress: string) => {
     if (ethAddress) {
       const localData = storage.getString(ethAddress);
       if (localData) {
-        console.log("MMKV CALL")
         const jsonData = JSON.parse(localData);
         setdata({
           handle: jsonData?.handle,
@@ -30,7 +29,6 @@ const useLensProfile = (ethAddress: string) => {
         return;
       }
     }
-    console.log("API CALL",ethAddress)
     try {
       let headersList = {
         "Content-Type": "application/json",

@@ -21,7 +21,6 @@ const Home = () => {
   }, []);
 
   const renderItem = ({ item }: { item: Conversation }) => {
-    console.log(item?.conversationID);
     if (item?.conversationID?.startsWith("lens.dev/dm")) {
       return (
         <ChatCard
