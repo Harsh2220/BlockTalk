@@ -6,6 +6,7 @@ import useClientStore from "../store/clientStore";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import parseCircularJSON from "../utils/parseCircularJson";
+import { Client, useClient } from "@xmtp/react-sdk";
 
 interface Signer {
   getAddress(): Promise<string>;
@@ -33,59 +34,29 @@ export default function index() {
 
   const handleConnect = useCallback(async () => {
     try {
-      console.log("Connecting to XMTP....");
-
-      function getCircularReplacer() {
-        const ancestors = [];
-        return function (key, value) {
-          if (typeof value !== "object" || value === null) {
-            return value;
-          }
-          // `this` is the object that value is contained in,
-          // i.e., its direct parent.
-          while (ancestors.length > 0 && ancestors.at(-1) !== this) {
-            ancestors.pop();
-          }
-          if (ancestors.includes(value)) {
-            return "[Circular]";
-          }
-          ancestors.push(value);
-          return value;
-        };
-      }
-
-      const XMTPClient = await AsyncStorage.getItem("@xmtp_client");
-
-      // if (XMTPClient) {
-      //   const client = parseCircularJSON(XMTPClient);
-      //   console.log(client, "parsed");
-      //   setClient(client);
-      // }
-
-      if (!XMTPClient) {
-        const client = await XMTP.Client.create(signer as any, "production");
-        await AsyncStorage.setItem(
-          "@xmtp_client",
-          JSON.stringify(client, getCircularReplacer())
-        );
-        setClient(client);
-        console.log("Clinet", client);
-      }
+      const client = await XMTP.Client.create(signer as any, "production");
+      const key = await client.exportKeyBundle();
+      await AsyncStorage.setItem("@xmtp_client", JSON.stringify(key));
+      setClient(client);
     } catch (error) {
       console.log("Error in connecting To XMTP", error);
     }
   }, []);
 
   const handleLogin = async () => {
-    const XMTPClient = await AsyncStorage.getItem("@xmtp_client");
-    if (XMTPClient) {
-      setClient(JSON.parse(XMTPClient));
+    const key = await AsyncStorage.getItem("@xmtp_client");
+    const client = await XMTP.Client.createFromKeyBundle(
+      JSON.parse(key),
+      "production"
+    );
+    if (client) {
+      setClient(client);
       router.replace("/Chats");
     }
   };
 
   React.useEffect(() => {
-    // handleLogin();
+    handleLogin();
   }, []);
 
   return (
