@@ -5,6 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useLensProfile from "../../hooks/useLensProfile";
 import formatAddress from "../../utils/formatAddress";
 import Avatar, { FALLBACK_IMAGE } from "../Avatar";
+import useActiveChatStore from "../../store/activeChatStore";
 
 type ChatCardProps = {
   src: string;
@@ -23,6 +24,7 @@ const ChatCard: React.FC<ChatCardProps> = ({
 }) => {
   const { data } = useLensProfile(item?.peerAddress);
   const router = useRouter();
+  const { setId, setTopic } = useActiveChatStore();
 
   const PROFILE_PIC_URI = data?.avatar;
 
@@ -35,12 +37,15 @@ const ChatCard: React.FC<ChatCardProps> = ({
   };
 
   const goToSingleChat = () => {
+    setId([item?.conversationID]);
+    setTopic([item?.topic]);
     router.push("/singlechat");
     router.setParams({
       chatName: data?.handle || chatName,
       address: address,
     });
   };
+
   return (
     <TouchableOpacity style={styles.chatCardContainer} onPress={goToSingleChat}>
       <TouchableOpacity onPress={openFullImage}>

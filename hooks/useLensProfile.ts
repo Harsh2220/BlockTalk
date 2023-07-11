@@ -45,7 +45,7 @@ const useLensProfile = (ethAddress: string) => {
           ),
         });
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   return { data };
 };

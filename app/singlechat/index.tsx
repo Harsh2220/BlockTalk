@@ -1,6 +1,8 @@
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useLayoutEffect } from "react";
 import {
+  ActivityIndicator,
+  FlatList,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -12,19 +14,20 @@ import {
 import Send from "../../assets/icons/Send";
 import ChatMessage from "../../components/Chats/ChatMessage";
 import useClientStore from "../../store/clientStore";
+import useActiveChatStore from "../../store/activeChatStore";
+import { DecodedMessage } from "@xmtp/react-native-sdk";
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 
 const SingleChat = ({}) => {
   const params = useLocalSearchParams();
   const navigation = useNavigation();
   const { client } = useClientStore();
-
-  const address = params.address;
+  const { id, topic, messages, setMessages } = useActiveChatStore();
+  const { address } = useWalletConnectModal();
 
   async function getMessages() {
-    for (const conversation of await client.conversations.list()) {
-      const messagesInConversation = await conversation.messages();
-      // console.log(messagesInConversation);
-    }
+    const messages = await client.listBatchMessages(topic, id);
+    setMessages(messages);
   }
 
   useLayoutEffect(() => {
@@ -32,7 +35,21 @@ const SingleChat = ({}) => {
       title: params.chatName,
     });
     getMessages();
+    return () => {
+      setMessages(null);
+    };
   }, []);
+
+  const renderItem = ({ item }: { item: DecodedMessage }) => {
+    return (
+      <ChatMessage
+        message={item?.content}
+        timestamp={"67"}
+        avatarSrc={""}
+        isSender={address === item?.senderAddress}
+      />
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -41,26 +58,18 @@ const SingleChat = ({}) => {
         style={styles.container}
         keyboardVerticalOffset={90}
       >
-        <ScrollView contentContainerStyle={{ paddingTop: 15 }}>
-          <ChatMessage
-            message={"abe kaha hai "}
-            timestamp={"45"}
-            avatarSrc={""}
-            isSender={true}
+        {messages ? (
+          <FlatList
+            data={messages}
+            renderItem={renderItem}
+            contentContainerStyle={{
+              paddingVertical: 16,
+            }}
+            inverted={true}
           />
-          <ChatMessage
-            message={"Bolo bhai"}
-            timestamp={"45"}
-            avatarSrc={""}
-            isSender={false}
-          />
-          <ChatMessage
-            message={"vo mere pese kab de raha hai"}
-            timestamp={"45"}
-            avatarSrc={""}
-            isSender={true}
-          />
-        </ScrollView>
+        ) : (
+          <ActivityIndicator size={"small"} />
+        )}
         <View style={styles.footer}>
           <TextInput
             autoFocus={false}

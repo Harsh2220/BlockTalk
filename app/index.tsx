@@ -36,7 +36,7 @@ export default function index() {
       const key = await client.exportKeyBundle();
       await AsyncStorage.setItem("@xmtp_client", JSON.stringify(key));
       setClient(client);
-      router.replace("/Chats")
+      router.replace("/Chats");
     } catch (error) {
       console.log("Error in connecting To XMTP", error);
     }
@@ -68,7 +68,9 @@ export default function index() {
       }}
     >
       <Button
-        onPress={open}
+        onPress={() => {
+          open();
+        }}
         title={isConnected ? "Connected" : "Connect Wallet"}
       />
       {isConnected && <Button title="Enable Chat" onPress={handleConnect} />}
