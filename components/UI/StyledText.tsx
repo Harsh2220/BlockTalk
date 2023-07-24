@@ -18,10 +18,7 @@ const StyledText: FC<SubHeadingProps> = ({
   ...rest
 }) => {
   const [fontsLoaded] = useFonts({
-    OpenSans_Regular: require("../../assets/fonts/OpenSans-Regular.ttf"),
-    OpenSans_Medium: require("../../assets/fonts/OpenSans-Medium.ttf"),
-    OpenSans_SemiBold: require("../../assets/fonts/OpenSans-SemiBold.ttf"),
-    OpenSans_Bold: require("../../assets/fonts/OpenSans-Bold.ttf"),
+    WorkSans: require("../../assets/fonts/WorkSans-VariableFont_wght.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -36,14 +33,8 @@ const StyledText: FC<SubHeadingProps> = ({
 
   const getFontFamily = (fontWeight: number) => {
     switch (fontWeight) {
-      case 700:
-        return "OpenSans_Bold";
-      case 600:
-        return "OpenSans_SemiBold";
-      case 500:
-        return "OpenSans_Medium";
       default:
-        return "OpenSans_Regular";
+        return "WorkSans";
     }
   };
 

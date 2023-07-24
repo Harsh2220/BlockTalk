@@ -5,16 +5,16 @@
       "bundler": "metro"
     },
     "name": "sample",
-    "slug": "xmtp",
+    "slug": "test",
     "extra": {
       "eas": {
-        "projectId": "9498969a-245c-45c2-aa59-90c8de4bff75"
+        "projectId": "a95316f6-18c7-493b-a42c-3e73f554451b"
       }
     },
     "experiments": {
       "typedRoutes": true
     },
-    "owner": "iamskia",
+    "owner": "somewhatsahil",
     "android": {
       "package": "com.vivek.xmtp"
     },

@@ -52,6 +52,7 @@ const StackLayout = () => {
           name="login/index"
           options={{
             title: "Get Started",
+            headerShown: false,
             animation: "slide_from_right",
           }}
         />

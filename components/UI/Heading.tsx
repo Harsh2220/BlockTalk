@@ -13,51 +13,42 @@ interface HeadingProps {
 SplashScreen.preventAutoHideAsync();
 
 const Heading: FC<HeadingProps> = ({ title, style, ...rest }) => {
-  // const [fontsLoaded] = useFonts({
-  //   PlusJakartaSans_Regular: require("../../assets/fonts/PlusJakartaSans-Regular.ttf"),
-  //   PlusJakartaSans_Medium: require("../../assets/fonts/PlusJakartaSans-Medium.ttf"),
-  //   PlusJakartaSans_SemiBold: require("../../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
-  //   PlusJakartaSans_Bold: require("../../assets/fonts/PlusJakartaSans-Bold.ttf"),
-  // });
+  const [fontsLoaded] = useFonts({
+    Outward_Block: require("../../assets/fonts/outward-block.ttf"),
+    Outward_Border: require("../../assets/fonts/outward-borders.ttf"),
+    Outward_Round: require("../../assets/fonts/outward-round.ttf"),
+    WorkSans: require("../../assets/fonts/WorkSans-VariableFont_wght.ttf"),
+  });
 
-  // const onLayoutRootView = useCallback(async () => {
-  //   if (fontsLoaded) {
-  //     await SplashScreen.hideAsync();
-  //   }
-  // }, [fontsLoaded]);
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const getFontFamily = (fontWeight: number) => {
     switch (fontWeight) {
-      case 700:
-        return "PlusJakartaSans_Bold";
-      case 600:
-        return "PlusJakartaSans_SemiBold";
-      case 500:
-        return "PlusJakartaSans_Medium";
+      // case 600:
+      //   return "Outward_Round";
+      // case 500:
+      //   return "Outward_Border";
       default:
-        return "PlusJakartaSans_Regular";
+        return "WorkSans";
     }
   };
 
-  // var newStyle = Object.assign({}, style, {
-  //   fontFamily: getFontFamily(parseInt(style?.fontWeight)),
-  // });
+  var newStyle = Object.assign({}, style, {
+    // fontFamily: getFontFamily(parseInt(style?.fontWeight)),
+  });
 
-  const defaultStyle = {
-    color: white[600],
-    fontSize: 18,
-  };
-  const mergerStyle = {
-    ...defaultStyle,
-    ...style as any,
-  };
+  
 
   return (
-    <Text style={mergerStyle} {...rest}>
+    <Text style={newStyle} {...rest} onLayout={onLayoutRootView}>
       {title}
     </Text>
   );

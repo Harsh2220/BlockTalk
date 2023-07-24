@@ -154,7 +154,7 @@ const Button = (props: ButtonProps): JSX.Element => {
                   color={"black"}
                 />
               </View>
-              <Text>{title}</Text>
+              <Text style={newStyle}>{title}</Text>
             </>
           ) : (
             <>
@@ -170,7 +170,8 @@ const Button = (props: ButtonProps): JSX.Element => {
               ) : (
                 <></>
               )}
-              <Text>{title}</Text>
+              <Text style={newStyle}>{title}</Text>
+
               {icon && iconPosition === "right" ? (
                 <View
                   style={{
