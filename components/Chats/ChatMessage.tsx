@@ -49,12 +49,9 @@ const styles = StyleSheet.create({
   receiverText: {
     color: "black",
     fontWeight: "500",
-    marginLeft: 10,
   },
   senderText: {
     fontWeight: "500",
-    marginLeft: 15,
-    marginBottom: 15,
     color: "black",
   },
 });

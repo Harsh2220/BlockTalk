@@ -26,49 +26,65 @@ const SingleChat = ({}) => {
   const params = useLocalSearchParams();
   const navigation = useNavigation();
   const { client } = useClientStore();
-  const { id, topic, messages, setMessages } = useActiveChatStore();
+  const { id, topic, messages, setMessages, addMessage } = useActiveChatStore();
   const { address } = useWalletConnectModal();
   const ownerProfileId = storage.getString(address);
   const jsonData = JSON.parse(ownerProfileId);
-
 
   const [inputMessage, setInputMessage] = useState("");
   async function getMessages() {
     const messages = await client.listBatchMessages(topic, id);
     setMessages(messages);
-  };
+  }
 
   async function sendMessage(message: string) {
-    const isOnNetwrok = await client.canMessage(params?.address);
-    console.log(isOnNetwrok, params?.address);
-    console.log(jsonData, 'yeh hai owner data');
-    const conversation = await client.conversations.newConversation(
-      params?.address,
-      {
-        conversationId: buildConversationId(jsonData?.profileId, params?.profileId),
-        metadata: {},
-      }
-    );
-    const result = await conversation.send(message);
-    setInputMessage('');
-    console.log(result);
+    try {
+      const isOnNetwrok = await client.canMessage(params?.address);
+      console.log(isOnNetwrok, params?.address);
+      console.log(jsonData, "yeh hai owner data", params?.address);
+      const conversation = await client.conversations.newConversation(
+        params?.address,
+        {
+          conversationId: buildConversationId(
+            jsonData?.profileId,
+            params?.profileId
+          ),
+          metadata: {},
+        }
+      );
+      const result = await conversation.send(message);
+      addMessage(result);
+      setInputMessage("");
+      console.log(result);
+    } catch (error) {
+      console.log(error, 'yaha hai');
+      
+    }
   }
 
   async function streamMessage() {
-    const conversation = await client.conversations.newConversation(
-      params?.address,
-      {
-        conversationId: buildConversationId(jsonData?.profileId, params?.profileId),
-        metadata: {},
-      }
-    );
-    const result = await conversation.streamMessages(async (message)=>{
-      console.log(message, 'yeh hai stream message');
-      setMessages([...messages, message]);
+    try {
+      const conversation = await client.conversations.newConversation(
+        params?.address,
+        {
+          conversationId: buildConversationId(
+            jsonData?.profileId,
+            params?.profileId
+          ),
+          metadata: {},
+        }
+      );
+      const result = await conversation.streamMessages(async (message) => {
+        console.log(message, "yeh hai stream message");
+        addMessage(message);
+        // setMessages([...messages, message]);
+      });
+      console.log(result, "yeh hai result");
+    } catch (error) {
+      console.log(error, 'Yaha bhi hai');
       
-    });
-    console.log(result, 'yeh hai result');
-    
+    }
+
     // for await (const message of await conversation.streamMessages()) {
     //   if (message.senderAddress === xmtp.address) {
     //     // This message was sent from me
@@ -76,7 +92,6 @@ const SingleChat = ({}) => {
     //   }
     //   console.log(`New message from ${message.senderAddress}: ${message.content}`)
     // }
-    
   }
 
   useEffect(()=>{

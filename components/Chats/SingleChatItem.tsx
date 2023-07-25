@@ -1,11 +1,12 @@
 import { Conversation } from "@xmtp/react-native-sdk";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useLensProfile from "../../hooks/useLensProfile";
 import formatAddress from "../../utils/formatAddress";
 import Avatar, { FALLBACK_IMAGE } from "../Avatar";
 import useActiveChatStore from "../../store/activeChatStore";
+import useClientStore from "../../store/clientStore";
 
 type ChatCardProps = {
   src: string;
@@ -25,8 +26,19 @@ const ChatCard: React.FC<ChatCardProps> = ({
   const { data } = useLensProfile(item?.peerAddress);
   const router = useRouter();
   const { setId, setTopic } = useActiveChatStore();
-
+  const { client } = useClientStore();
+  const [latest, setLatest] = useState('');
   const PROFILE_PIC_URI = data?.avatar;
+
+  useEffect(()=>{
+   getLatestMessage();
+  })
+
+  const getLatestMessage = async () => {
+    const messages = await client.listBatchMessages([item?.topic], [item?.conversationID]);
+  
+    setLatest(messages[0]?.content);
+  }
 
   const openFullImage = () => {
     router.push("/fullImage");
@@ -57,7 +69,7 @@ const ChatCard: React.FC<ChatCardProps> = ({
           {data?.handle || data?.name || formatAddress(item?.peerAddress)}
         </Text>
         <Text style={styles.lastMessage} numberOfLines={1}>
-          {lastMessage}
+          {latest}
         </Text>
       </View>
     </TouchableOpacity>

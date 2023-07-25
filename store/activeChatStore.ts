@@ -7,7 +7,8 @@ interface IActiveChatStore {
     messages: null | DecodedMessage[]
     setId: (id: string[]) => void;
     setTopic: (topic: string[]) => void;
-    setMessages: (messages: DecodedMessage[] | null) => void
+    setMessages: (messages: DecodedMessage[] | null) => void;
+    addMessage: (message: DecodedMessage) =>  void;
 }
 
 const useActiveChatStore = create<IActiveChatStore>((set) => ({
@@ -28,6 +29,11 @@ const useActiveChatStore = create<IActiveChatStore>((set) => ({
         set({
             messages: messages
         })
+    },
+    addMessage: (message) => {
+        set((state)=> ({
+            messages: [message, ...state.messages]
+        }))
     }
 }));
 
