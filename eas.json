@@ -14,9 +14,10 @@
       "developmentClient": true
     },
     "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "node": "v18.16.1"
+      "developmentClient": false,
+      // "distribution": "internal",
+      "node": "v18.16.1",
+      // "buildType": "apk"
     },
     "development-simulator": {
       "developmentClient": true,
@@ -25,6 +26,11 @@
         "simulator": true
       }
     },
-    "production": {}
+    "production": {
+
+    },
+    "prod": {
+      "channel": "prod"
+    }
   }
 }

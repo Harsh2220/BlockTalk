@@ -26,7 +26,9 @@
             "compileSdkVersion": 31,
             "targetSdkVersion": 31,
             "buildToolsVersion": "31.0.0",
-            "minSdkVersion": 22
+            "minSdkVersion": 22,
+            // "extraProguardRules":true
+            "enableProguardRules":true
           },
           "ios": {
             "deploymentTarget": "16.0"
