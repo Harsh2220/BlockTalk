@@ -5,6 +5,7 @@ import Chats from "../../assets/icons/Chats";
 import { black, white } from "../../constants/Colors";
 import Settings from "../../assets/icons/Settings";
 import { Pressable, View } from "react-native";
+import Search from "../../assets/icons/Search";
 
 export default function () {
   const router = useRouter();
@@ -44,9 +45,19 @@ export default function () {
                   flex: 1,
                   justifyContent: "center",
                   alignItems: "center",
+                  flexDirection: "row",
                 }}
               >
                 <Pressable
+                  style={{ paddingHorizontal: 4}}
+                  onPress={() => {
+                    router.push("/settings");
+                  }}
+                >
+                  <Search height={32} width={32} />
+                </Pressable>
+                <Pressable
+                  style={{ paddingHorizontal: 4 }}
                   onPress={() => {
                     router.push("/settings");
                   }}
