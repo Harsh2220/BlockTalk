@@ -1,7 +1,7 @@
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import { DecodedMessage } from "@xmtp/react-native-sdk";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -19,6 +19,8 @@ import { black, white } from "../../constants/Colors";
 import { isIOS } from "../../constants/platform";
 import useActiveChatStore from "../../store/activeChatStore";
 import useClientStore from "../../store/clientStore";
+import buildConversationId from "../../utils/createLensConversationId";
+import { storage } from "../../lib/storage";
 
 const SingleChat = ({}) => {
   const params = useLocalSearchParams();
@@ -26,12 +28,60 @@ const SingleChat = ({}) => {
   const { client } = useClientStore();
   const { id, topic, messages, setMessages } = useActiveChatStore();
   const { address } = useWalletConnectModal();
+  const ownerProfileId = storage.getString(address);
+  const jsonData = JSON.parse(ownerProfileId);
+
 
   const [inputMessage, setInputMessage] = useState("");
   async function getMessages() {
     const messages = await client.listBatchMessages(topic, id);
     setMessages(messages);
+  };
+
+  async function sendMessage(message: string) {
+    const isOnNetwrok = await client.canMessage(params?.address);
+    console.log(isOnNetwrok, params?.address);
+    console.log(jsonData, 'yeh hai owner data');
+    const conversation = await client.conversations.newConversation(
+      params?.address,
+      {
+        conversationId: buildConversationId(jsonData?.profileId, params?.profileId),
+        metadata: {},
+      }
+    );
+    const result = await conversation.send(message);
+    setInputMessage('');
+    console.log(result);
   }
+
+  async function streamMessage() {
+    const conversation = await client.conversations.newConversation(
+      params?.address,
+      {
+        conversationId: buildConversationId(jsonData?.profileId, params?.profileId),
+        metadata: {},
+      }
+    );
+    const result = await conversation.streamMessages(async (message)=>{
+      console.log(message, 'yeh hai stream message');
+      setMessages([...messages, message]);
+      
+    });
+    console.log(result, 'yeh hai result');
+    
+    // for await (const message of await conversation.streamMessages()) {
+    //   if (message.senderAddress === xmtp.address) {
+    //     // This message was sent from me
+    //     continue
+    //   }
+    //   console.log(`New message from ${message.senderAddress}: ${message.content}`)
+    // }
+    
+  }
+
+  useEffect(()=>{
+    streamMessage();
+  }, [])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -89,13 +139,14 @@ const SingleChat = ({}) => {
             placeholderTextColor={"gray"}
             selectionColor={"white"}
             style={styles.textinput}
+            value={inputMessage}
             onChange={(e) => {
               setInputMessage(e.nativeEvent.text);
             }}
           />
           <TouchableOpacity
             onPress={() => {
-              Alert.alert(inputMessage);
+              sendMessage(inputMessage);
             }}
             activeOpacity={0.5}
           >

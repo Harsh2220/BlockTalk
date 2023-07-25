@@ -13,6 +13,7 @@ import formatAddress from "../../utils/formatAddress";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import StyledText from "../../components/UI/StyledText";
+import useLensProfile from "../../hooks/useLensProfile";
 
 interface Signer {
   getAddress(): Promise<string>;
@@ -23,6 +24,7 @@ const Login = () => {
   const router = useRouter();
   const { open, isConnected, address, provider } = useWalletConnectModal();
   const { setClient } = useClientStore();
+  const { getLensProfile } = useLensProfile(address, true);
 
   const windowHeight = Dimensions.get("window").height;
 
@@ -48,6 +50,7 @@ const Login = () => {
       const key = await client.exportKeyBundle();
       await AsyncStorage.setItem(StorageKeys.XMTPClient, JSON.stringify(key));
       setClient(client);
+      await getLensProfile();
       router.replace("/Chats");
     } catch (error) {
       console.log("Error in connecting To XMTP", error);

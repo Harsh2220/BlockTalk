@@ -43,6 +43,7 @@ const ChatCard: React.FC<ChatCardProps> = ({
     router.setParams({
       chatName: data?.handle || chatName,
       address: address,
+      profileId: data?.profileId
     });
   };
 
